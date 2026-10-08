@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kuis Pusaka · Uji Kuis Keris</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={theme:{extend:{colors:{gold:{DEFAULT:'#f57b01',soft:'#ffb056'},brown:'#160c06',brown2:'#241409',brown3:'#3a2216',kbenar:'#26890c',ksalah:'#e21b3c'},fontFamily:{serif:['"Playfair Display"','Georgia','serif'],sans:['Inter','system-ui','sans-serif']}}}}</script>
+<link rel="stylesheet" href="style.css">
+<style>
+:root{color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html,body{height:100%}
+body{background:#160c06;color:#e4e4e7;font-family:Inter,system-ui,sans-serif;overflow-x:hidden}
+.jw{font-family:'JawaPalsu','Playfair Display',Georgia,serif}
+
+/* Latar batik parang + lapisan gelap agar teks terbaca */
+.batik{position:fixed;inset:0;z-index:-2;background:url("img/batik%20parang.jpeg") center/cover no-repeat}
+.batik::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(22,12,6,.88),rgba(22,12,6,.78) 45%,rgba(22,12,6,.92))}
+
+.gold-text{background:linear-gradient(100deg,#f57b01,#ffb056,#f57b01);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 6s linear infinite}
+@keyframes shine{to{background-position:200% center}}
+.glass{background:rgba(34,18,9,.78);backdrop-filter:blur(14px);border:1px solid rgba(245,123,1,.2)}
+.tf{transition:all .25s}.tf:hover{transform:translateY(-2px)}
+.bob{animation:bob 4s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-10px)}}
+
+/* Tim besar ala Kahoot */
+.tbar{height:14px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}
+.tbar>div{height:100%;border-radius:99px;background:linear-gradient(90deg,#ffb056,#f57b01);transition:width .1s linear}
+.tbar>div.bahaya{background:linear-gradient(90deg,#ff6a3d,#e21b3c)}
+.tnum{width:64px;height:64px;border:4px solid rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.5rem}
+.tnum.bahaya{border-color:#e21b3c;color:#ff8fa3;animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+
+/* Tombol jawab ala Kahoot */
+.ans{position:relative;border-radius:18px;padding:1.6rem 1.2rem;font-weight:800;letter-spacing:.06em;font-size:clamp(1.4rem,4.5vw,2.2rem);color:#fff;box-shadow:0 8px 0 rgba(0,0,0,.35),inset 0 2px 0 rgba(255,255,255,.25);transition:transform .15s,box-shadow .15s,filter .15s;user-select:none}
+.ans:hover{filter:brightness(1.12)}
+.ans:active{transform:translateY(6px);box-shadow:0 2px 0 rgba(0,0,0,.35),inset 0 2px 0 rgba(255,255,255,.25)}
+.ans:disabled{cursor:default;filter:saturate(.55) brightness(.75)}
+.ans svg{position:absolute;left:14px;top:14px;opacity:.85}
+.a-bener{background:#26890c}
+.a-salah{background:#e21b3c}
+
+/* Kartu soal masuk */
+.qin{animation:qin .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes qin{from{opacity:0;transform:translateY(26px) scale(.97)}to{opacity:1;transform:none}}
+
+/* Flash layar penuh benar/salah ala Kahoot */
+#flash{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;text-align:center;padding:1.5rem;visibility:hidden;opacity:0;transition:opacity .25s,visibility .25s}
+#flash.on{visibility:visible;opacity:1}
+#flash.bener{background:rgba(38,137,12,.94)}
+#flash.salah{background:rgba(226,27,60,.94)}
+#flash .ikon{animation:ikon .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes ikon{from{transform:scale(.2) rotate(-18deg);opacity:0}to{transform:none;opacity:1}}
+
+/* Poin melayang */
+.pop{animation:pop .6s cubic-bezier(.2,.8,.2,1)}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head>
+<body>
+<div class="batik" aria-hidden="true"></div>
+
+<!-- BAR ATAS -->
+<header class="glass sticky top-0 z-40" style="padding-top:env(safe-area-inset-top,0px)">
+ <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
+  <a href="index.html" class="flex items-center gap-2 font-serif text-lg font-bold tracking-wide"><span class="text-gold">◆</span> PUSAKA <span class="text-stone-500 font-sans text-xs font-medium hidden sm:inline">· Kuis</span></a>
+  <div class="flex items-center gap-2">
+   <div id="streakBox" class="hidden items-center gap-1.5 rounded-full border border-gold/40 bg-black/40 px-3 py-1.5 text-xs font-semibold text-gold-soft"></div>
+   <div id="poinBox" class="rounded-full border border-gold/30 bg-black/40 px-3 py-1.5 text-xs font-semibold text-gold-soft">Poin <span id="poin" class="text-white">0</span></div>
+   <button id="mute" class="rounded-full border border-gold/30 w-9 h-9 shrink-0 text-sm hover:bg-gold/10" aria-label="Suara aktif/nonaktif" title="Suara">🔊</button>
+  </div>
+ </div>
+</header>
+
+<main class="max-w-3xl mx-auto px-4 pb-16">
+
+ <!-- 1 · LOBI -->
+ <section id="lobi" class="pt-10 sm:pt-16">
+  <div class="glass rounded-3xl p-8 sm:p-10 text-center qin">
+   <img src="img/Maskot/Ayu%20(Greeting).png" alt="Maskot Ayu menyapa" class="w-24 sm:w-28 mx-auto bob object-contain drop-shadow-[0_10px_24px_rgba(0,0,0,.5)]">
+   <p class="jw text-gold-soft text-2xl sm:text-3xl mt-2">Sugeng Rawuh!</p>
+   <h1 class="font-serif text-4xl sm:text-5xl font-bold mt-1">Kuis <span class="gold-text">Pusaka</span></h1>
+   <p class="text-stone-300 mt-4">Lima pernyataan, <b class="text-gold-soft">20 detik</b> saben soal. Cepet lan teliti — makin cepet wangsulanmu bener, makin gedhe poiné!</p>
+   <ul class="mt-5 flex flex-wrap justify-center gap-2 text-xs font-medium">
+    <li class="rounded-full bg-white/10 px-3 py-1.5">⏱ 20 detik / soal</li>
+    <li class="rounded-full bg-white/10 px-3 py-1.5">🎯 Maks. 1.000 poin / soal</li>
+    <li class="rounded-full bg-white/10 px-3 py-1.5">🔥 Bonus streak</li>
+   </ul>
+   <button id="mulai" class="tf mt-8 rounded-2xl bg-gold text-black font-extrabold tracking-widest text-lg px-12 py-4 shadow-[0_8px_0_#9a4d00] hover:brightness-110 active:translate-y-1 active:shadow-[0_2px_0_#9a4d00]">MULAI ▸</button>
+   <p class="text-xs text-stone-500 mt-5">balik menyang <a href="index.html#kuis" class="text-gold hover:text-gold-soft underline underline-offset-2">halaman utama</a></p>
+  </div>
+ </section>
+
+ <!-- 2 · PERMAINAN -->
+ <section id="game" class="hidden pt-6 sm:pt-10">
+  <div class="flex items-center justify-between gap-4 mb-3">
+   <p id="noSoal" class="text-xs tracking-[.3em] text-gold font-semibold">SOAL 1/5</p>
+   <div class="flex items-center gap-3">
+    <div id="tnum" class="tnum">20</div>
+   </div>
+  </div>
+  <div class="tbar mb-6"><div id="tfill" style="width:100%"></div></div>
+
+  <div id="kartuSoal" class="glass rounded-3xl p-6 sm:p-9 min-h-[150px] flex items-center">
+   <p id="soal" class="font-serif text-2xl sm:text-3xl leading-snug font-medium"></p>
+  </div>
+
+  <div class="grid sm:grid-cols-2 gap-4 mt-7">
+   <button id="btnBener" class="ans a-bener qin">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M12 2 22 21H2Z"/></svg>
+    BENER
+   </button>
+   <button id="btnSalah" class="ans a-salah qin" style="animation-delay:.08s">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M12 1 23 12 12 23 1 12Z"/></svg>
+    SALAH
+   </button>
+  </div>
+ </section>
+
+ <!-- 3 · HASIL -->
+ <section id="asil" class="hidden pt-10 sm:pt-14">
+  <div class="glass rounded-3xl p-8 sm:p-10 text-center qin">
+   <img id="mascotAsil" src="img/Maskot/Ayu%20(Appreciation).png" alt="Maskot Ayu mengapresiasi" class="w-24 sm:w-28 mx-auto bob object-contain drop-shadow-[0_10px_24px_rgba(0,0,0,.5)]">
+   <p class="text-xs tracking-[.3em] text-gold font-semibold mt-2">ASELÉ KUISMU</p>
+   <p id="skor" class="font-serif text-6xl sm:text-7xl font-bold gold-text mt-2 tabular-nums">0</p>
+   <p id="ringkas" class="text-stone-400 mt-1">0 dari 5 bener</p>
+   <div class="mt-6 rounded-2xl border border-gold/30 bg-black/40 px-6 py-5 max-w-sm mx-auto">
+    <p class="text-[11px] tracking-[.3em] text-stone-400">GELARMU</p>
+    <p id="gelar" class="jw text-4xl text-gold-soft mt-1">Siswa</p>
+    <p id="gelarKet" class="text-sm text-stone-400 mt-1"></p>
+   </div>
+   <div class="flex flex-wrap justify-center gap-3 mt-8">
+    <button id="bali" class="tf rounded-2xl bg-gold text-black font-extrabold tracking-widest px-8 py-3.5 shadow-[0_6px_0_#9a4d00] active:translate-y-1 active:shadow-[0_2px_0_#9a4d00]">BALÉNI MALIH ⟳</button>
+    <a href="index.html#kuis" class="tf rounded-2xl border-2 border-gold/60 text-gold font-semibold px-8 py-3.5 hover:bg-gold/10">← Bali menyang Pusaka</a>
+   </div>
+  </div>
+ </section>
+</main>
+
+<!-- FLASH BENER / SALAH -->
+<div id="flash" aria-live="assertive">
+ <div id="fIkon" class="ikon text-[88px] leading-none"></div>
+ <p id="fJudul" class="font-extrabold tracking-widest text-4xl sm:text-6xl"></p>
+ <p id="fPoin" class="text-xl sm:text-2xl font-bold"></p>
+ <p id="fKet" class="max-w-md text-white/90 text-sm sm:text-base mt-2"></p>
+</div>
+
+<footer class="text-center text-xs text-stone-600 pb-8">PUSAKA · Preserving Unity, Sustaining Ancestral Knowledge &amp; Artistry</footer>
+
+<script src="quiz.js"></script>
+</body></html>

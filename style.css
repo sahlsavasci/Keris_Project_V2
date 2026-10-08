@@ -1,0 +1,293 @@
+@font-face {
+  font-family: 'JawaPalsu';
+  src: url('./Custom font/JAWAPALSU.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* ===== GAYA DASAR (dulu <style> di index.html) ===== */
+.jw {
+  font-family: 'JawaPalsu', 'Instrument Serif', Georgia, serif
+}
+:root {
+  color-scheme: dark;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px)
+}
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 76px)
+}
+body {
+  background: #160c06;
+  color: #e4e4e7;
+  font-family: Hanken Grotesk, system-ui, sans-serif;
+  overflow-x: hidden
+}
+.gold-text {
+  background: linear-gradient(100deg, #f57b01, #ffb056, #f57b01);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shine 6s linear infinite
+}
+@keyframes shine {
+  to {
+    background-position: 200% center
+  }
+}
+.bob {
+  animation: bob 4s ease-in-out infinite
+}
+@keyframes bob {
+  50% {
+    transform: translateY(-10px)
+  }
+}
+.spin {
+  animation: spin 40s linear infinite
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg)
+  }
+}
+.rv {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .8s, transform .8s
+}
+.rv.in {
+  opacity: 1;
+  transform: none
+}
+.glass {
+  background: rgba(34, 18, 9, .74);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(245, 123, 1, .18)
+}
+.sec {
+  transition: opacity .6s
+}
+body.guiding .sec {
+  opacity: .3
+}
+body.guiding .sec.focus {
+  opacity: 1
+}
+.spot {
+  animation: spot 1.5s infinite;
+  position: relative
+}
+@keyframes spot {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 214, 150, .65)
+  }
+  100% {
+    box-shadow: 0 0 0 18px rgba(255, 214, 150, 0)
+  }
+}
+.eq {
+  display: none;
+  gap: 2px;
+  align-items: flex-end;
+  height: 14px
+}
+.playing .eq {
+  display: flex
+}
+.eq i {
+  width: 3px;
+  background: #f57b01;
+  border-radius: 2px;
+  animation: eq .9s ease-in-out infinite
+}
+.eq i:nth-child(2) {
+  animation-delay: .2s
+}
+.eq i:nth-child(3) {
+  animation-delay: .45s
+}
+@keyframes eq {
+  0%,
+  100% {
+    height: 3px
+  }
+  50% {
+    height: 14px
+  }
+}
+.no-sb {
+  scrollbar-width: none
+}
+.no-sb::-webkit-scrollbar {
+  display: none
+}
+.no-sb.drag {
+  scroll-snap-type: none;
+  cursor: grabbing
+}
+.gcard {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform .25s, border-color .3s, box-shadow .3s;
+  user-select: none
+}
+.gcard:hover {
+  border-color: #f57b01;
+  box-shadow: 0 20px 60px -20px rgba(245, 123, 1, .35)
+}
+.gimg {
+  transition: transform .9s cubic-bezier(.2, .8, .2, 1)
+}
+.gcard:hover .gimg {
+  transform: scale(1.08)
+}
+#dm {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .35s, visibility .35s
+}
+#dm.open {
+  visibility: visible;
+  opacity: 1
+}
+#dmCard {
+  transform: translateY(24px) scale(.96);
+  transition: transform .5s cubic-bezier(.2, .8, .2, 1)
+}
+#dm.open #dmCard {
+  transform: none
+}
+.tf {
+  transition: all .3s
+}
+.tf:hover {
+  transform: translateY(-2px)
+}
+@media (prefers-reduced-motion:reduce) {
+  * {
+    animation: none !important;
+    transition: none !important
+  }
+  .rv {
+    opacity: 1;
+    transform: none
+  }
+}
+
+/* ===== TEMA v5 · "Nila & Soga" =====
+   Nila (indigo) #121f3a · #1a2b4d · #263c66   Mori #f1ede3   Pamor #a9b8cc
+   Soga (aksen tunggal) #d9833f · #f0b27a
+   Instrument Serif (judul) · Hanken Grotesk (isi) · JawaPalsu (sapaan)
+   Dimuat paling akhir; layout tidak diubah.                              */
+:root{--nila:#121f3a;--nila2:#1a2b4d;--nila3:#263c66;--mori:#f1ede3;--pamor:#a9b8cc;--soga:#d9833f;--soga-m:#f0b27a}
+::selection{background:var(--soga);color:#121f3a}
+:focus-visible{outline:2px solid var(--soga-m);outline-offset:3px}
+
+/* dasar */
+body{background:var(--nila);color:var(--mori);font-family:'Hanken Grotesk',system-ui,sans-serif}
+body .text-stone-300{color:var(--mori)}body .text-stone-400{color:var(--pamor)}
+body .text-stone-500,body .text-stone-600{color:#8195b0}
+body .border-stone-800,body .border-stone-700,body .border-brown3{border-color:var(--nila3)}
+body .tracking-\[\.3em\],body .tracking-\[\.25em\]{letter-spacing:.08em;font-weight:500;color:var(--pamor)}
+.gold-text{background:linear-gradient(180deg,var(--soga-m),var(--soga));-webkit-background-clip:text;background-clip:text;animation:none}
+.blob{display:none}
+.eq i{background:var(--soga)}
+body .bg-\[\#f57b01\]{background:var(--soga)}
+
+/* huruf */
+body .font-serif{font-family:'Instrument Serif',Georgia,serif;font-weight:400;letter-spacing:-.005em}
+body h2.font-serif{font-size:clamp(2.8rem,6vw,4.4rem);line-height:1}
+body h3.font-serif{line-height:1.05}
+#soal{font-size:clamp(1.9rem,4.5vw,2.7rem);font-weight:400;line-height:1.15}
+
+/* permukaan: datar, satu garis nila */
+header.glass{background:rgba(18,31,58,.9);backdrop-filter:blur(10px);border:0;border-bottom:1px solid var(--nila3)}
+.glass{background:var(--nila2);backdrop-filter:none;border:1px solid var(--nila3);box-shadow:none}
+body .rounded-3xl,body .rounded-2xl{border-radius:.75rem}
+#galeri{background:none}
+.gcard:hover{border-color:var(--soga);box-shadow:none}
+body .bg-black\/30,body .bg-black\/40{background:rgba(10,18,36,.4)}
+
+/* hero: satu-satunya momen — batik parang jadi tekstur besi */
+.hero{background:var(--nila);animation:none}
+.hero::before{content:'';position:absolute;inset:0;background:url("img/batik%20parang.jpeg") center/cover;filter:grayscale(1) contrast(1.2);opacity:.2;mix-blend-mode:luminosity}
+.hero-glow{background:linear-gradient(180deg,rgba(18,31,58,.25),rgba(18,31,58,.7) 70%,var(--nila))}
+.tumpal{display:none}
+body .hero .rv{color:var(--mori)}
+body .hero h1{color:var(--mori)}
+body .hero .rv>p{color:var(--mori)}
+body .hero .rv>p.jw{color:var(--soga-m)}
+body .hero .rv>span{background:transparent;color:var(--pamor);border:1px solid var(--nila3);font-weight:500}
+body #btn-anatomi{background:var(--mori);color:var(--nila)}
+body #btn-panduan{border-color:var(--pamor);color:var(--mori)}
+body #btn-panduan:hover{background:var(--mori);color:var(--nila)}
+.hero li{background:transparent;border:1px solid var(--nila3);color:var(--pamor)}
+body #pr{background:var(--nila2);border:1px solid var(--nila3)}
+
+/* tombol utama: soga datar */
+body #btn-kuis,body #mulai,body #bali{background:var(--soga);color:#121f3a;border-radius:.6rem;box-shadow:none}
+body #btn-kuis:active,body #mulai:active,body #bali:active{box-shadow:none;transform:scale(.98)}
+
+/* gerak: hanya fade halus */
+.rv{transform:none;transition:opacity .7s}
+.tf:hover{transform:none}
+
+/* kuis */
+.batik::after{background:linear-gradient(180deg,rgba(18,31,58,.95),rgba(18,31,58,.9) 45%,rgba(13,22,42,.97))}
+.tbar>div{background:linear-gradient(90deg,var(--soga-m),var(--soga))}
+.ans{border-radius:.6rem;box-shadow:0 4px 0 rgba(0,0,0,.28)}
+
+/* ===== NAVBAR · pil melayang (acuan: Spyglass) ===== */
+header.glass{background:transparent;backdrop-filter:none;border:0;box-shadow:none;color:var(--nila);
+ padding:calc(env(safe-area-inset-top,0px) + 12px) 12px 0 !important;pointer-events:none}
+header.glass>div{pointer-events:auto;max-width:68rem;height:3.5rem;background:var(--mori);border-radius:999px;
+ padding-inline:.75rem .75rem;box-shadow:0 10px 30px -8px rgba(0,0,0,.45),0 1px 0 rgba(255,255,255,.7) inset}
+header.glass>div>a{padding-left:.6rem;color:var(--nila)}
+header .font-serif{font-size:1.55rem;line-height:1;color:var(--nila)}
+header nav{gap:.25rem}
+header nav a{color:#3d4966;font-weight:500;padding:.45rem .85rem;border-radius:999px;transition:background .2s,color .2s}
+header nav a:hover{background:rgba(18,31,58,.07);color:var(--nila)}
+header .text-stone-500{color:#6b7790}
+header .text-white{color:var(--nila)}
+header .text-gold-soft{color:#9a4f17}
+header .bg-black\/40{background:rgba(18,31,58,.06)}
+header [class*="border-gold"]{border-color:rgba(18,31,58,.16)}
+header #fs,header #mute{color:var(--nila);background:transparent}
+header #fs:hover,header #mute:hover{background:rgba(18,31,58,.07)}
+/* pil audio = penanda aksi gelap, seperti tombol hitam di acuan */
+header #now{background:var(--nila);border-color:var(--nila);color:var(--mori)}
+header #now #stopBtn{color:var(--pamor)}
+header #now #stopBtn:hover{color:#fff}
+
+/* ===== HALAMAN KUIS · blok krem berujung bulat di atas nila (acuan: Spyglass) ===== */
+#lobi>.glass,#asil>.glass,#kartuSoal{background:var(--mori);color:var(--nila);border:0;border-radius:1.75rem;
+ box-shadow:0 28px 60px -30px rgba(0,0,0,.65)}
+#lobi .text-stone-300,#asil .text-stone-300{color:#2b3a5c}
+#lobi .text-stone-400,#asil .text-stone-400{color:#5a6784}
+#lobi .text-stone-500,#asil .text-stone-500{color:#6b7790}
+#lobi .text-gold-soft,#asil .text-gold-soft{color:#9a4f17}
+#lobi .text-gold,#asil .text-gold{color:#a8581a}
+#lobi .bg-white\/10{background:rgba(18,31,58,.06)}
+#asil .bg-black\/40{background:rgba(18,31,58,.05)}
+#asil [class*="border-gold"]{border-color:rgba(18,31,58,.16)}
+
+/* judul: serif besar, satu kata miring bernada soga */
+#lobi h1{font-size:clamp(3.2rem,9vw,4.8rem);line-height:1}
+#lobi h1 .gold-text{background:none;color:#c0702c;font-style:italic}
+#lobi .jw,#gelar{color:#a8581a}
+#skor{background:none;color:var(--nila);font-size:clamp(4.5rem,14vw,6.5rem);line-height:1}
+
+/* tombol: pil gelap seperti CTA di acuan */
+#lobi #mulai,#asil #bali{background:var(--nila);color:var(--mori);border-radius:999px;box-shadow:none}
+#lobi #mulai:active,#asil #bali:active{box-shadow:none;transform:scale(.98)}
+#asil a.tf{border-color:rgba(18,31,58,.25);color:var(--nila);border-radius:999px}
+#asil a.tf:hover{background:rgba(18,31,58,.07)}
+
+/* permainan */
+.ans{border-radius:1.5rem;box-shadow:0 5px 0 rgba(0,0,0,.25)}
+.a-bener{background:#2f8f5b}.a-salah{background:#c2453f}
+#flash.bener{background:rgba(30,110,70,.97)}#flash.salah{background:rgba(170,50,48,.97)}
+.tbar{height:10px}
