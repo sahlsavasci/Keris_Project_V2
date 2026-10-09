@@ -1,9 +1,9 @@
 /* ============================================================
-   KUIS PUSAKA — gaya Kahoot, jawaban BENER / SALAH
+   KUIS PUSAKA — gaya Kahoot, jawaban BENAR / SALAH
    (halaman quiz.html · latarnya batik parang)
    ------------------------------------------------------------
-   Alur: lobi → 5 soal (timer 20 dtk) → flash bener/salah → asil
-   Poin ala Kahoot: makin cepet jawab, makin gedhe poiné.
+   Alur: lobi → 5 soal (timer 20 dtk) → flash benar/salah → hasil
+   Poin ala Kahoot: makin cepat menjawab, makin besar poinnya.
    ============================================================ */
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -115,7 +115,7 @@ function jalan() {
   if (sisa <= 0) {
     clearInterval(timer);
     lock = true;
-    jawab(null);               // wektune entek → dianggap salah
+    jawab(null);               // waktu habis → dianggap salah
   }
 }
 
@@ -170,7 +170,7 @@ function flash(pas, daptar, ket, entek) {
   elFlash.classList.add(pas ? 'bener' : 'salah', 'on');
 
   $('#fIkon').textContent = pas ? '✓' : (entek ? '⏰' : '✕');
-  $('#fJudul').textContent = pas ? 'BENER!' : (entek ? 'WEKTUNE ENTEK!' : 'SALAH!');
+  $('#fJudul').textContent = pas ? 'BENAR!' : (entek ? 'WAKTU HABIS!' : 'SALAH!');
   $('#fPoin').textContent = pas ? `+${daptar} poin` : '+0 poin';
   $('#fKet').textContent = ket;
 
@@ -186,10 +186,10 @@ function flash(pas, daptar, ket, entek) {
 
 /* ---------- HASIL AKHIR ---------- */
 const GELAR = [
-  [1.00, 'Empu',       'Sampurna! Kowé layak diarani Empu — sing ngéto keris nganti ing jero.'],
-  [0.80, 'Pande',      'Hebat! Kowé wong Pande sing paham bab keris.'],
-  [0.60, 'Siswa',      'Cukup apik! Ayo sinau maneh ana ing anatomi lan galeri.'],
-  [0.00, 'Wong Anyar', 'Ora apa-apa — dolan maneh menyang anatomi lan galeri, banjur cobaa kuis iki.'],
+  [1.00, 'Empu',       'Sempurna! Kamu layak disebut Empu — paham keris sampai ke bagian terdalamnya.'],
+  [0.80, 'Pande',      'Hebat! Kamu seorang Pande yang paham seluk-beluk keris.'],
+  [0.60, 'Siswa',      'Cukup bagus! Yuk pelajari lagi bagian Anatomi dan Galeri.'],
+  [0.00, 'Pemula', 'Tidak apa-apa — pelajari dulu Anatomi dan Galeri, lalu coba kuis ini lagi.'],
 ];
 
 function rampung() {
@@ -206,11 +206,11 @@ function rampung() {
 
   const rasio = benar / QZ.length;
   const g = GELAR.find(([m]) => rasio >= m) || GELAR[GELAR.length - 1];
-  $('#ringkas').textContent = `${benar} dari ${QZ.length} bener`;
+  $('#ringkas').textContent = `${benar} dari ${QZ.length} benar`;
   $('#gelar').textContent = g[1];
   $('#gelarKet').textContent = g[2];
 
-  // skor muncul mekar (count-up ala Kahoot)
+  // skor naik bertahap (count-up ala Kahoot)
   const elSkor = $('#skor'), mulaiT = performance.now(), durasi = 1200;
   (function tik(rn) {
     const t = Math.min(1, (rn - mulaiT) / durasi);

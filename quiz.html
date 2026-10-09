@@ -2,15 +2,14 @@
 <html lang="id"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kuis Pusaka · Uji Kuis Keris</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
-<script>tailwind.config={theme:{extend:{colors:{gold:{DEFAULT:'#f57b01',soft:'#ffb056'},brown:'#160c06',brown2:'#241409',brown3:'#3a2216',kbenar:'#26890c',ksalah:'#e21b3c'},fontFamily:{serif:['"Playfair Display"','Georgia','serif'],sans:['Inter','system-ui','sans-serif']}}}}</script>
-<link rel="stylesheet" href="style.css">
+<script>tailwind.config={theme:{extend:{colors:{gold:{DEFAULT:'#c26a1f',soft:'#e8a05f'},brown:'#2e1a0e',brown2:'#e8d3b4',brown3:'#a98660',kbenar:'#26890c',ksalah:'#e21b3c'},fontFamily:{serif:['"Instrument Serif"','Georgia','serif'],sans:['Hanken Grotesk','system-ui','sans-serif']}}}}</script>
 <style>
 :root{color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html,body{height:100%}
-body{background:#160c06;color:#e4e4e7;font-family:Inter,system-ui,sans-serif;overflow-x:hidden}
-.jw{font-family:'JawaPalsu','Playfair Display',Georgia,serif}
+body{background:#160c06;color:#e4e4e7;font-family:Hanken Grotesk,system-ui,sans-serif;overflow-x:hidden}
+.jw{font-family:'JawaPalsu','Instrument Serif',Georgia,serif}
 
 /* Latar batik parang + lapisan gelap agar teks terbaca */
 .batik{position:fixed;inset:0;z-index:-2;background:url("img/batik%20parang.jpeg") center/cover no-repeat}
@@ -56,7 +55,8 @@ body{background:#160c06;color:#e4e4e7;font-family:Inter,system-ui,sans-serif;ove
 @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-</style></head>
+</style><link rel="stylesheet" href="style.css">
+</head>
 <body>
 <div class="batik" aria-hidden="true"></div>
 
@@ -78,16 +78,16 @@ body{background:#160c06;color:#e4e4e7;font-family:Inter,system-ui,sans-serif;ove
  <section id="lobi" class="pt-10 sm:pt-16">
   <div class="glass rounded-3xl p-8 sm:p-10 text-center qin">
    <img src="img/Maskot/Ayu%20(Greeting).png" alt="Maskot Ayu menyapa" class="w-24 sm:w-28 mx-auto bob object-contain drop-shadow-[0_10px_24px_rgba(0,0,0,.5)]">
-   <p class="jw text-gold-soft text-2xl sm:text-3xl mt-2">Sugeng Rawuh!</p>
+   <p class="jw text-gold-soft text-2xl sm:text-3xl mt-2">Selamat Datang!</p>
    <h1 class="font-serif text-4xl sm:text-5xl font-bold mt-1">Kuis <span class="gold-text">Pusaka</span></h1>
-   <p class="text-stone-300 mt-4">Lima pernyataan, <b class="text-gold-soft">20 detik</b> saben soal. Cepet lan teliti — makin cepet wangsulanmu bener, makin gedhe poiné!</p>
+   <p class="text-stone-300 mt-4">Lima pernyataan, <b class="text-gold-soft">20 detik</b> untuk setiap soal. Jawab dengan cepat dan teliti — semakin cepat jawabanmu benar, semakin besar poinnya!</p>
    <ul class="mt-5 flex flex-wrap justify-center gap-2 text-xs font-medium">
     <li class="rounded-full bg-white/10 px-3 py-1.5">⏱ 20 detik / soal</li>
     <li class="rounded-full bg-white/10 px-3 py-1.5">🎯 Maks. 1.000 poin / soal</li>
     <li class="rounded-full bg-white/10 px-3 py-1.5">🔥 Bonus streak</li>
    </ul>
    <button id="mulai" class="tf mt-8 rounded-2xl bg-gold text-black font-extrabold tracking-widest text-lg px-12 py-4 shadow-[0_8px_0_#9a4d00] hover:brightness-110 active:translate-y-1 active:shadow-[0_2px_0_#9a4d00]">MULAI ▸</button>
-   <p class="text-xs text-stone-500 mt-5">balik menyang <a href="index.html#kuis" class="text-gold hover:text-gold-soft underline underline-offset-2">halaman utama</a></p>
+   <p class="text-xs text-stone-500 mt-5">kembali ke <a href="index.html#kuis" class="text-gold hover:text-gold-soft underline underline-offset-2">halaman utama</a></p>
   </div>
  </section>
 
@@ -108,7 +108,7 @@ body{background:#160c06;color:#e4e4e7;font-family:Inter,system-ui,sans-serif;ove
   <div class="grid sm:grid-cols-2 gap-4 mt-7">
    <button id="btnBener" class="ans a-bener qin">
     <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M12 2 22 21H2Z"/></svg>
-    BENER
+    BENAR
    </button>
    <button id="btnSalah" class="ans a-salah qin" style="animation-delay:.08s">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M12 1 23 12 12 23 1 12Z"/></svg>
@@ -121,23 +121,23 @@ body{background:#160c06;color:#e4e4e7;font-family:Inter,system-ui,sans-serif;ove
  <section id="asil" class="hidden pt-10 sm:pt-14">
   <div class="glass rounded-3xl p-8 sm:p-10 text-center qin">
    <img id="mascotAsil" src="img/Maskot/Ayu%20(Appreciation).png" alt="Maskot Ayu mengapresiasi" class="w-24 sm:w-28 mx-auto bob object-contain drop-shadow-[0_10px_24px_rgba(0,0,0,.5)]">
-   <p class="text-xs tracking-[.3em] text-gold font-semibold mt-2">ASELÉ KUISMU</p>
+   <p class="text-xs tracking-[.3em] text-gold font-semibold mt-2">HASIL KUISMU</p>
    <p id="skor" class="font-serif text-6xl sm:text-7xl font-bold gold-text mt-2 tabular-nums">0</p>
-   <p id="ringkas" class="text-stone-400 mt-1">0 dari 5 bener</p>
+   <p id="ringkas" class="text-stone-400 mt-1">0 dari 5 benar</p>
    <div class="mt-6 rounded-2xl border border-gold/30 bg-black/40 px-6 py-5 max-w-sm mx-auto">
     <p class="text-[11px] tracking-[.3em] text-stone-400">GELARMU</p>
     <p id="gelar" class="jw text-4xl text-gold-soft mt-1">Siswa</p>
     <p id="gelarKet" class="text-sm text-stone-400 mt-1"></p>
    </div>
    <div class="flex flex-wrap justify-center gap-3 mt-8">
-    <button id="bali" class="tf rounded-2xl bg-gold text-black font-extrabold tracking-widest px-8 py-3.5 shadow-[0_6px_0_#9a4d00] active:translate-y-1 active:shadow-[0_2px_0_#9a4d00]">BALÉNI MALIH ⟳</button>
-    <a href="index.html#kuis" class="tf rounded-2xl border-2 border-gold/60 text-gold font-semibold px-8 py-3.5 hover:bg-gold/10">← Bali menyang Pusaka</a>
+    <button id="bali" class="tf rounded-2xl bg-gold text-black font-extrabold tracking-widest px-8 py-3.5 shadow-[0_6px_0_#9a4d00] active:translate-y-1 active:shadow-[0_2px_0_#9a4d00]">MAIN LAGI ⟳</button>
+    <a href="index.html#kuis" class="tf rounded-2xl border-2 border-gold/60 text-gold font-semibold px-8 py-3.5 hover:bg-gold/10">← Kembali ke Pusaka</a>
    </div>
   </div>
  </section>
 </main>
 
-<!-- FLASH BENER / SALAH -->
+<!-- FLASH BENAR / SALAH -->
 <div id="flash" aria-live="assertive">
  <div id="fIkon" class="ikon text-[88px] leading-none"></div>
  <p id="fJudul" class="font-extrabold tracking-widest text-4xl sm:text-6xl"></p>
