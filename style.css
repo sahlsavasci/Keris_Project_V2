@@ -91,7 +91,9 @@ body .text-stone-400 { color: var(--tinta2) }
 body .text-stone-500, body .text-stone-600 { color: var(--tinta3) }
 body .border-stone-800, body .border-stone-700 { border-color: var(--garis) }
 body .text-gold, body .text-gold-soft, body [class*="text-orange-"] { color: var(--aksen-t) }
-body .text-green-400 { color: #2f7a4a }
+body .text-stone-100, body .text-stone-200 { color: var(--tinta) }
+body .text-green-400, body .text-emerald-400 { color: #2f7a4a }
+body .text-rose-400 { color: #b3261e }
 body .tracking-\[\.3em\], body .tracking-\[\.25em\] { letter-spacing: .08em; font-weight: 600; color: var(--tinta3) }
 body .bg-black\/30, body .bg-black\/40 { background: rgba(74, 46, 26, .06) }
 body [class*="bg-black/60"] { color: var(--aksen-m) }
@@ -104,7 +106,9 @@ body .bg-\[\#f57b01\] { background: var(--aksen) }
 :is(.hero, #dm, #modal) .text-stone-500, :is(.hero, #dm, #modal) .text-stone-600 { color: #bfa584 }
 :is(.hero, #dm, #modal) .border-stone-800 { border-color: rgba(255, 255, 255, .14) }
 :is(.hero, #dm, #modal) .text-gold, :is(.hero, #dm, #modal) .text-gold-soft, :is(.hero, #dm, #modal) [class*="text-orange-"] { color: var(--aksen-m) }
-:is(.hero, #dm, #modal) .text-green-400 { color: #7fd6a0 }
+:is(.hero, #dm, #modal) .text-stone-100, :is(.hero, #dm, #modal) .text-stone-200 { color: var(--terang) }
+:is(.hero, #dm, #modal) .text-green-400, :is(.hero, #dm, #modal) .text-emerald-400 { color: #7fd6a0 }
+:is(.hero, #dm, #modal) .text-rose-400 { color: #ff9aa8 }
 :is(.hero, #dm, #modal) .tracking-\[\.3em\], :is(.hero, #dm, #modal) .tracking-\[\.25em\] { color: var(--aksen-m) }
 :is(.hero, #dm, #modal) .bg-black\/30, :is(.hero, #dm, #modal) .bg-black\/40 { background: rgba(255, 255, 255, .06) }
 :is(#dm, #modal) .glass { background: var(--kopi); border-color: rgba(255, 255, 255, .12); color: var(--terang) }
@@ -140,7 +144,6 @@ body .rounded-2xl { border-radius: 1rem }
 .gcard:hover { border-color: rgba(184, 98, 31, .55); box-shadow: 0 1px 0 rgba(255, 255, 255, .75) inset, 0 30px 50px -28px rgba(60, 32, 10, .65) }
 .gimg { transition: transform .9s cubic-bezier(.2, .8, .2, 1) }
 .gcard:hover .gimg { transform: scale(1.08) }
-.anak { background: var(--krem2) !important; border-color: var(--garis) !important }
 
 /* ---------- 8 · NAVBAR (pil krem melayang) ---------- */
 header.glass {
@@ -170,52 +173,62 @@ header #now .text-stone-300, header #now .text-stone-400 { color: var(--terang) 
 header #now #stopBtn { color: #d9c3a5 }
 header #now #stopBtn:hover { color: #fff }
 
+/* ---------- 8b · BALON PEMANDU ---------- */
+body #bubble #cap { color: var(--tinta) }
+
 /* ---------- 9 · HERO ---------- */
+/* Isi hero berada tepat di tengah layar (atas = bawah), dengan ruang kosong di sekelilingnya */
 body .hero {
-  min-height: 100svh;                       /* setinggi layar, isi di tengah */
-  padding-top: 5.5rem; padding-bottom: 2.5rem;
+  min-height: 100svh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 5rem 1.25rem;                     /* ← atas & bawah sama = isi di tengah */
   background: var(--kopi);
   border-radius: 0 0 2.5rem 2.5rem;
 }
-.hero::before {                              /* batik parang sebagai tekstur */
+.hero::before {                              /* batik parang sebagai tekstur, dibuat lebih tenang */
   content: ''; position: absolute; inset: 0;
   background: url("img/batik%20parang.jpeg") center / cover;
-  filter: grayscale(1) contrast(1.2); opacity: .2; mix-blend-mode: luminosity;
+  filter: grayscale(1) contrast(1.2); opacity: .16; mix-blend-mode: luminosity;
 }
-.hero-glow { background: linear-gradient(180deg, rgba(46, 26, 14, .2), rgba(46, 26, 14, .72)) }
+.hero-glow { background: radial-gradient(ellipse 75% 65% at 50% 50%, rgba(46, 26, 14, .55), rgba(46, 26, 14, .9)) }
 .tumpal { display: none }
 #pr { display: none !important }             /* kotak progres: disembunyikan (main.js masih menulis ke #pr) */
 
-body .hero .rv { max-width: 64rem; color: var(--terang) }
-body .hero .rv > span {                      /* label "RUMAH BELAJAR KERIS NUSANTARA" */
-  background: transparent; color: #d9c3a5; border: 1px solid rgba(255, 255, 255, .22);
-  font-weight: 500; font-size: clamp(.75rem, 1vw, .9rem); padding: .65rem 1.4rem;
+body .hero .rv { width: 100%; max-width: 46rem; color: var(--terang) }   /* ← lebar kolom isi */
+
+/* label di atas */
+body .hero .rv > span {
+  background: transparent; color: #d9c3a5; border: 1px solid rgba(255, 255, 255, .2);
+  font-weight: 500; font-size: .72rem; letter-spacing: .12em; padding: .5rem 1.1rem;
 }
 
 /* >>> TEKS "SUGENG RAWUH" — ubah ukuran, jarak, dan warna emas di sini <<< */
 @keyframes emas-kilau { to { background-position: 200% 0 } }
 body .hero h1 {
-  font-size: clamp(4rem, 12vw, 10rem);
+  font-size: clamp(3.25rem, min(8vw, 14vh), 7rem);        /* ikut lebar DAN tinggi layar */
   line-height: 1.06;
-  margin-top: clamp(3rem, 6vw, 2rem);
+  margin-top: clamp(1.5rem, 3.2vh, 2.25rem);
   padding-top: .08em;
   background: linear-gradient(100deg, #b9791f 0%, #f4d47e 18%, #fff6d2 28%, #e2a93d 42%, #a8691a 58%, #f1cd6e 76%, #b9791f 100%);
   background-size: 200% 100%; background-repeat: repeat-x;
   -webkit-background-clip: text; background-clip: text;
   color: transparent; -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 0 rgba(86, 46, 8, .7)) drop-shadow(0 10px 28px rgba(232, 160, 95, .35));
+  filter: drop-shadow(0 2px 0 rgba(86, 46, 8, .7)) drop-shadow(0 8px 22px rgba(232, 160, 95, .25));
   animation: emas-kilau 7s linear infinite;      /* kecepatan kilau */
 }
-body .hero .rv > p { color: var(--terang) }
-body .hero .rv > p.jw { color: var(--aksen-m); font-size: clamp(1.7rem, 3.8vw, 3.2rem); margin-top: 1.75rem }
-body .hero .rv > p:not(.jw) { font-size: clamp(1.05rem, 1.5vw, 1.3rem); max-width: 40rem; margin-top: 1.75rem; line-height: 1.7 }
-body .hero .rv > div { margin-top: 2.5rem; gap: 1rem }
-body .hero ul { margin-top: 2rem }
-body .hero li { background: transparent; border: 1px solid rgba(255, 255, 255, .22); color: #d9c3a5; font-size: .85rem; padding: .45rem .95rem }
 
-/* tombol hero */
+/* sapaan, paragraf */
+body .hero .rv > p { color: var(--terang) }
+body .hero .rv > p.jw { color: var(--aksen-m); font-size: clamp(1.35rem, min(3vw, 4.2vh), 2.1rem); margin-top: 1rem }
+body .hero .rv > p:not(.jw) { color: #e6d9c5; font-size: clamp(1rem, 1.25vw, 1.15rem); max-width: 34rem; margin: 1.5rem auto 0; line-height: 1.75 }
+
+/* tombol + keterangan kecil */
+body .hero .rv > div { margin-top: 2.5rem; gap: .9rem }
+body .hero ul { margin-top: 2.25rem }
+body .hero li { background: transparent; border: 1px solid rgba(255, 255, 255, .16); color: #cdb89a; font-size: .8rem; padding: .4rem .85rem }
+
 body .hero #btn-anatomi, body .hero #btn-panduan {
-  font-size: 1.05rem; padding: 1.05rem 2.1rem; letter-spacing: .01em;
+  font-size: 1rem; padding: .95rem 1.9rem; letter-spacing: .01em;
   transition: transform .25s, box-shadow .25s, background .25s, color .25s, border-color .25s;
 }
 body .hero #btn-anatomi {
@@ -239,7 +252,7 @@ body #btn-kuis:active, body #mulai:active, body #bali:active { box-shadow: none;
 #lobi .jw, #gelar { color: var(--aksen-t) }
 #lobi li { background: transparent; border: 1px solid var(--garis); color: var(--tinta2) }
 #skor { font-style: normal; color: var(--tinta); font-size: clamp(4.5rem, 14vw, 6.5rem); line-height: 1 }
-#asil .rounded-2xl { background: var(--krem2); border: 1px solid var(--garis) }
+#asil div.rounded-2xl { background: var(--krem2); border: 1px solid var(--garis) }
 #asil a.tf { border: 2px solid rgba(74, 46, 26, .28); color: var(--tinta); border-radius: 999px }
 #asil a.tf:hover { background: rgba(74, 46, 26, .07) }
 #soal { font-size: clamp(1.9rem, 4.5vw, 2.7rem); font-weight: 400; line-height: 1.15 }
