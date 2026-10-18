@@ -229,18 +229,23 @@ const S = { on: true };       // status suara (tombol 🔊 / 🔇)
 let tok = 0;                  // nomor urut ucapan; ucapan lama otomatis batal
 const synth = window.speechSynthesis;
 
-// Satu-satunya suara rekaman: sambutan Ayu (elemen <audio> di index.html)
+// Rekaman suara Ayu untuk tiap langkah tur (elemen <audio> di index.html)
+const REKAMAN_PEMANDU = ['#suaraSambutan', '#suaraAnatomi', '#suaraGaleri', '#suaraVideo', '#suaraKuis'];
 let sambutanTimer = null;     // pengaman agar tur tidak melompat dua kali
 
+// Hentikan semua rekaman pemandu yang sedang bunyi
 function stopSambutan() {
   if (sambutanTimer) { clearTimeout(sambutanTimer); sambutanTimer = null; }
-  const a = $('#suaraSambutan');
-  if (a) { a.onended = null; a.pause(); }
+  REKAMAN_PEMANDU.forEach((sel) => {
+    const a = $(sel);
+    if (a) { a.onended = null; a.pause(); }
+  });
 }
 
-function putarSambutan(sesudahSelesai) {
+// Putar satu rekaman pemandu (default: sambutan)
+function putarSambutan(sesudahSelesai, sel = '#suaraSambutan') {
   stopSambutan();
-  const a = $('#suaraSambutan');
+  const a = $(sel);
   a.currentTime = 0;
   a.volume = 1;
   a.onended = () => { a.onended = null; if (sesudahSelesai) sesudahSelesai(); };
@@ -364,8 +369,8 @@ terapkanUkuranHuruf();
 const KUNCI_PROGRES = 'pusaka-progres';
 const LANGKAH_PROGRES = [
   ['anatomi', 'Pelajari anatomi keris'],
-  ['galeri',  'Jelajahi galeri pusaka'],
-  ['kuis',    'Selesaikan kuis'],
+  ['galeri', 'Jelajahi galeri pusaka'],
+  ['kuis', 'Selesaikan kuis'],
 ];
 
 let progres = JSON.parse(localStorage.getItem(KUNCI_PROGRES) || '{}');
@@ -393,8 +398,8 @@ function renderProgres() {
       ${LANGKAH_PROGRES.map(([k, label]) => `
         <li class="flex items-center gap-2">
           ${progres[k]
-            ? '<span class="text-green-400 font-semibold">✓</span>'
-            : '<span class="opacity-60">○</span>'}
+      ? '<span class="text-green-400 font-semibold">✓</span>'
+      : '<span class="opacity-60">○</span>'}
           <span class="${progres[k] ? '' : 'opacity-70'}">${label}</span>
         </li>`).join('')}
     </ul>`;
@@ -414,25 +419,43 @@ const BAGIAN = [
     foto: 'img/AnatomiKeris/Gagang%20keris.png',
     garis: 'Pegangan keris — gubahan anatomi manusia yang menunduk (unggah-ungguh).',
     anak: [
-      { n: 'Sirah — Ngajeng & Wingking',
+      {
+        n: 'Sirah — Ngajeng & Wingking',
         d: 'Bagian teratas hulu: Sirah Ngajeng melengkung ke arah depan, Sirah Wingking adalah mahkota teratas sebelah belakang.',
-        m: 'Melambangkan kepala manusia yang menunduk.' },
-      { n: 'Bathuk (Dahi)',
-        d: 'Cembungan atau tonjolan di bagian dahi — depan atas, tepat di bawah Sirah Ngajeng.' },
-      { n: 'Geger (Punggung)',
-        d: 'Sisi belakang gagang yang melengkung mulus — dirancang ergonomis untuk menempel pada telapak tangan saat keris digenggam.' },
-      { n: 'Dhadha (Dada) & Weteng (Perut)',
-        d: 'Bagian depan gagang yang membusung — tumpuan lekukan jari manis dan jari tengah agar genggaman mantap dan tidak licin.' },
-      { n: 'Pipi',
-        d: 'Bidang datar atau melengkung halus di sisi kanan dan kiri deder.' },
-      { n: 'Cetek / Cigir (Pinggang)',
-        d: 'Lekukan menyempit di antara bagian dada dan pangkal bawah hulu — batas estetika sekaligus lekukan ergonomis.' },
-      { n: 'Bungkul',
-        d: 'Tonjolan membulat di bagian bawah depan, tepat di atas pangkal hulu.' },
-      { n: 'Cecekan / Patra (Ukiran Ornamen)',
-        d: 'Ukiran halus berbentuk sulur-suluran (lung-lungan), dedaunan, atau garis artistik pada kayu/gading — menyamarkan bentuk manusia sesuai ajaran budaya Jawa-Islam.' },
-      { n: 'Alas Deder & Lubang Pesi',
-        d: 'Bagian tumpakan paling bawah yang rata; di tengahnya terdapat lubang tempat masuknya pesi (tangkai besi keris). Menempel rapat pada mendak (cincin pembatas).' },
+        m: 'Melambangkan kepala manusia yang menunduk.'
+      },
+      {
+        n: 'Bathuk (Dahi)',
+        d: 'Cembungan atau tonjolan di bagian dahi — depan atas, tepat di bawah Sirah Ngajeng.'
+      },
+      {
+        n: 'Geger (Punggung)',
+        d: 'Sisi belakang gagang yang melengkung mulus — dirancang ergonomis untuk menempel pada telapak tangan saat keris digenggam.'
+      },
+      {
+        n: 'Dhadha (Dada) & Weteng (Perut)',
+        d: 'Bagian depan gagang yang membusung — tumpuan lekukan jari manis dan jari tengah agar genggaman mantap dan tidak licin.'
+      },
+      {
+        n: 'Pipi',
+        d: 'Bidang datar atau melengkung halus di sisi kanan dan kiri deder.'
+      },
+      {
+        n: 'Cetek / Cigir (Pinggang)',
+        d: 'Lekukan menyempit di antara bagian dada dan pangkal bawah hulu — batas estetika sekaligus lekukan ergonomis.'
+      },
+      {
+        n: 'Bungkul',
+        d: 'Tonjolan membulat di bagian bawah depan, tepat di atas pangkal hulu.'
+      },
+      {
+        n: 'Cecekan / Patra (Ukiran Ornamen)',
+        d: 'Ukiran halus berbentuk sulur-suluran (lung-lungan), dedaunan, atau garis artistik pada kayu/gading — menyamarkan bentuk manusia sesuai ajaran budaya Jawa-Islam.'
+      },
+      {
+        n: 'Alas Deder & Lubang Pesi',
+        d: 'Bagian tumpakan paling bawah yang rata; di tengahnya terdapat lubang tempat masuknya pesi (tangkai besi keris). Menempel rapat pada mendak (cincin pembatas).'
+      },
     ],
   },
   {
@@ -441,22 +464,38 @@ const BAGIAN = [
     foto: 'img/AnatomiKeris/Warangka%20Keris.png',
     garis: 'Sarung keris — penopang, pelindung, sekaligus wajah penampil pusaka.',
     anak: [
-      { n: 'Sampir / Daun Warangka',
-        d: 'Bagian teratas yang melebar mirip perahu melengkung — menopang ganja keris serta menahan keris agar tersangkut stabil saat diselipkan di pinggang.' },
-      { n: 'Angkeb (Lubang Warangka)',
-        d: 'Celah atau bibir di permukaan atas tempat memasukkan bilah keris.' },
-      { n: 'Janggut / Dhadha',
-        d: 'Bagian cembungan depan sampir yang membusung.' },
-      { n: 'Godhi / Runcingan Ujung',
-        d: 'Ujung melengkung runcing di bagian depan sampir — sangat menonjol pada gaya Ladrang atau Branggah.' },
-      { n: 'Awa / Buntut Sampir',
-        d: 'Bagian belakang sampir yang meliuk pendek ke arah belakang pegangan.' },
-      { n: 'Gandar',
-        d: 'Batang kayu memanjang ke bawah dari dasar sampir; di dalamnya terdapat rongga presisi (alur) yang memeluk bilah (wilah) agar aman dan tidak bergoyang.' },
-      { n: 'Pendok',
-        d: 'Selongsong logam (kuningan, tembaga, perak, atau emas) pembungkus gandar kayu — memperindah penampilan sekaligus menguatkan struktur agar kayu tidak mudah retak.' },
-      { n: 'Buntut / Angkus',
-        d: 'Bagian paling ujung/bawah warangka (ujung pendok); pada pendok tipe bunton dibuat tumpul membulat atau diberi ukiran mahkota kecil sebagai penutup estetis.' },
+      {
+        n: 'Sampir / Daun Warangka',
+        d: 'Bagian teratas yang melebar mirip perahu melengkung — menopang ganja keris serta menahan keris agar tersangkut stabil saat diselipkan di pinggang.'
+      },
+      {
+        n: 'Angkeb (Lubang Warangka)',
+        d: 'Celah atau bibir di permukaan atas tempat memasukkan bilah keris.'
+      },
+      {
+        n: 'Janggut / Dhadha',
+        d: 'Bagian cembungan depan sampir yang membusung.'
+      },
+      {
+        n: 'Godhi / Runcingan Ujung',
+        d: 'Ujung melengkung runcing di bagian depan sampir — sangat menonjol pada gaya Ladrang atau Branggah.'
+      },
+      {
+        n: 'Awa / Buntut Sampir',
+        d: 'Bagian belakang sampir yang meliuk pendek ke arah belakang pegangan.'
+      },
+      {
+        n: 'Gandar',
+        d: 'Batang kayu memanjang ke bawah dari dasar sampir; di dalamnya terdapat rongga presisi (alur) yang memeluk bilah (wilah) agar aman dan tidak bergoyang.'
+      },
+      {
+        n: 'Pendok',
+        d: 'Selongsong logam (kuningan, tembaga, perak, atau emas) pembungkus gandar kayu — memperindah penampilan sekaligus menguatkan struktur agar kayu tidak mudah retak.'
+      },
+      {
+        n: 'Buntut / Angkus',
+        d: 'Bagian paling ujung/bawah warangka (ujung pendok); pada pendok tipe bunton dibuat tumpul membulat atau diberi ukiran mahkota kecil sebagai penutup estetis.'
+      },
     ],
   },
   {
@@ -465,30 +504,44 @@ const BAGIAN = [
     foto: 'img/AnatomiKeris/Badan%20keris.png',
     garis: 'Bilah inti keris — dari pesi di dasar hingga pucukan di ujung.',
     anak: [
-      { n: 'Pesi',
-        d: 'Tangkai besi silinder ramping di dasar bilah; menancap masuk ke dalam deder (pegangan) setelah melewati lubang ganja dan mendak.' },
-      { n: 'Sorsoran',
+      {
+        n: 'Pesi',
+        d: 'Tangkai besi silinder ramping di dasar bilah; menancap masuk ke dalam deder (pegangan) setelah melewati lubang ganja dan mendak.'
+      },
+      {
+        n: 'Sorsoran',
         d: 'Seperempat bagian paling bawah bilah (tepat di atas ganja) — area paling padat yang memuat sebagian besar ornamen (ricikan).',
-        foto: 'img/AnatomiKeris/Badan%20keris.png' },
-      { n: 'Awak-awak',
+        foto: 'img/AnatomiKeris/Badan%20keris.png'
+      },
+      {
+        n: 'Awak-awak',
         d: 'Bagian tengah atau badan bilah keris.',
-        foto: 'img/AnatomiKeris/Ujung%20keris.png' },
-      { n: 'Luk',
+        foto: 'img/AnatomiKeris/Ujung%20keris.png'
+      },
+      {
+        n: 'Luk',
         d: 'Lekukan bilah; jumlahnya selalu berbilang ganjil — luk 3, 5, 7, 9, hingga 13.',
         m: 'Dinamika dan gelombang perjalanan hidup.',
-        foto: 'img/AnatomiKeris/Ujung%20keris.png' },
-      { n: 'Pamor',
+        foto: 'img/AnatomiKeris/Ujung%20keris.png'
+      },
+      {
+        n: 'Pamor',
         d: 'Pola serat perak hasil teknik menempa lipat besi, baja, dan bahan pamor (nikel/meteorit).',
         m: 'Visualisasi doa dan harapan sang Empu.',
-        foto: 'img/AnatomiKeris/Badan%20keris.png' },
-      { n: 'Pucukan',
+        foto: 'img/AnatomiKeris/Badan%20keris.png'
+      },
+      {
+        n: 'Pucukan',
         d: 'Ujung paling atas bilah keris yang meruncing.',
         m: 'Fokus dan tujuan akhir hidup — Manunggal ing Gusti.',
-        foto: 'img/AnatomiKeris/Landep.png' },
-      { n: 'Ada-ada',
+        foto: 'img/AnatomiKeris/Landep.png'
+      },
+      {
+        n: 'Ada-ada',
         d: 'Lingir atau tulang penyeimbang yang menonjol memanjang di tengah-tengah bilah.',
         m: 'Keteguhan niat dan prinsip kebenaran.',
-        foto: 'img/AnatomiKeris/Landep.png' },
+        foto: 'img/AnatomiKeris/Landep.png'
+      },
     ],
   },
 ];
@@ -544,34 +597,65 @@ renderAnatomi();
 /* ---------- 9. TUR PANDUAN MASKOT ---------- */
 // t = judul topik · sec = section yang difokus
 // sel = elemen yang disorot · s = kalimat yang diucapkan
+// pose = postur maskot di langkah ini: 'sapa' | 'periksa' | 'jelas' | 'tutup' (lihat MASKOT)
+// manual = true → menekan tombol sorotan TIDAK otomatis lanjut (mis. video: biarkan pengunjung menonton);
+//          caption diganti `after`, lalu pengunjung menekan "Lewati" saat siap
+// onLeave = dipanggil saat meninggalkan langkah ini
 
 const STEPS = [
   {
     t: 'Pengantar',
+    pose: 'sapa',        // Ayu (Greeting)
     sec: '#hero',
     sel: '#btn-anatomi',
-    audio: true,   // langkah ini memakai rekaman sambutan Ayu
+    audio: '#suaraSambutan',   // rekaman sambutan Ayu
+    otomatis: true,            // selesai rekaman → lanjut sendiri ke langkah berikut
     s: 'Halo, selamat datang di Pusaka, rumah belajar keris Nusantara. Aku akan menemanimu berkeliling singkat. Pertama, tekan tombol Mulai Belajar yang bersinar di layar.',
   },
   {
     t: 'Anatomi Keris',
+    pose: 'periksa',     // Ayu (Inspecting)
     sec: '#anatomi',
     sel: '.tab',
+    audio: '#suaraAnatomi',
     s: 'Inilah tiga bagian utama keris: deder, warangka, dan wilah. Coba tekan salah satu tab di atas, lalu baca sub-anatomi di samping fotonya.',
   },
   {
     t: 'Galeri Pusaka',
+    pose: 'periksa',     // Ayu (Inspecting)
     sec: '#galeri',
     sel: '.eye',
-    s: 'Bagus! Sekarang galeri pusaka. Geser koleksinya ke kanan atau kiri, lalu tekan tombol mata pada salah satu keris untuk membuka detail lengkapnya.',
+    audio: '#suaraGaleri',
+    s: 'Bagus! Sekarang galeri pusaka. Geser koleksinya ke kanan atau kiri, lalu tekan tombol pada salah satu keris untuk membuka detail lengkapnya.',
+  },
+  {
+    t: 'Video Pembuatan Keris',
+    pose: 'jelas',        // Ayu (Explaining)
+    sec: '#video',
+    sel: '#videoPlay',
+    audio: '#suaraVideo',
+    manual: true,        // jangan pindah sendiri setelah video diputar
+    s: 'Sebelum menguji pengetahuan, tontonlah proses pembuatan keris. Tekan tombol putar untuk melihat bagaimana sebilah keris ditempa, mulai dari marka, pasarangan, hingga peracikan.',
+    after: 'Selamat menonton! Kalau sudah selesai, tekan Lewati untuk lanjut ke kuis.',
+    onLeave: jedaVideo,  // video dijeda saat tur pindah ke langkah berikutnya
   },
   {
     t: 'Uji Pengetahuan',
+    pose: 'jelas',       // Ayu (Explaining)
     sec: '#kuis',
     sel: '#btn-kuis',
-    s: 'Terakhir, uji pengetahuanmu. Tekan tombol Mulai Kuis — kuis bergaya Kahoot akan dibuka di halaman khusus.',
+    audio: '#suaraKuis',
+    s: 'Terakhir, uji pengetahuanmu. Tekan tombol Mulai Kuis — lima pernyataan Benar atau Salah menunggumu di halaman kuis.',
   },
 ];
+
+// Jeda video YouTube (butuh enablejsapi=1 pada alamat embed di index.html)
+function jedaVideo() {
+  const f = $('#videoWrap iframe');
+  if (f && f.contentWindow) {
+    f.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), '*');
+  }
+}
 
 let gi = -1;           // indeks langkah sekarang
 let clean = null;      // pembersih sorotan langkah sebelumnya
@@ -585,7 +669,7 @@ function focusSec(id) {
 function startGuide() {
   guiding = true;
   gi = -1;
-  setMaskot('jelas');   // maskot mulai menjelaskan
+  setMaskot('sapa');    // langkah pertama: maskot menyapa (postur tiap langkah diatur di nextStep)
   showDock();           // pastikan dock terlihat walau belum digulir
   document.body.classList.add('guiding');
   $('#bubble').classList.remove('hidden');
@@ -604,6 +688,7 @@ function nextStep() {
 
   const step = STEPS[gi];
   const targets = $$(step.sel);
+  setMaskot(step.pose || 'jelas');   // postur maskot sesuai halaman/langkah
 
   focusSec(step.sec);
   $(step.sec).scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -613,21 +698,38 @@ function nextStep() {
   const lanjut = () => {
     if (gi !== langkahIni) return;   // sudah maju lewat jalur lain
     stopSambutan();
+    if (step.manual) {                 // mis. video: biarkan pengunjung menonton
+      tok++; if (synth) synth.cancel();   // hentikan suara agar tidak menimpa audio video
+      setNow('', false);
+      $('#cap').textContent = step.after;
+      targets.forEach((el) => el.classList.remove('spot'));
+      return;
+    }
     setTimeout(nextStep, gi === 1 ? 900 : 300);
   };
   targets.forEach((el) => el.addEventListener('click', lanjut, { once: true }));
 
-  clean = () =>
+  clean = () => {
     targets.forEach((el) => {
       el.classList.remove('spot');
       el.removeEventListener('click', lanjut);
     });
+    if (step.onLeave) step.onLeave();
+  };
 
   // Langkah sambutan: putar rekaman Ayu (tanpa TTS agar tidak bertumpuk)
-  if (step.audio) {
+  if (step.audio && step.otomatis) {
     $('#cap').textContent = step.s;
     setNow('Sambutan (Ayu)', true);
-    putarSambutan(() => { if (gi === langkahIni) nextStep(); });
+    putarSambutan(() => { if (gi === langkahIni) nextStep(); }, step.audio);
+    return;
+  }
+
+  // Langkah lain: putar rekaman Ayu (bila suara aktif), lalu tunggu pengunjung menekan tombol sorotan
+  if (step.audio && S.on) {
+    $('#cap').textContent = step.s;
+    setNow(step.t + ' (Ayu)', true);
+    putarSambutan(() => { if (gi === langkahIni) setNow(step.t, false); }, step.audio);
     return;
   }
 
@@ -661,13 +763,16 @@ $('#end').onclick = () => endGuide(false);
 
 
 /* ---------- 10. MODAL BIMBINGAN & MASKOT DOCK ---------- */
-// Maskot punya tiga postur (folder img/Maskot/):
-//   sapa  → menyambut pengunjung (hero & kondisi diam)
-//   jelas → saat tur sedang menjelaskan
-//   tutup → saat tur selesai (ucapan penutup)
+// Maskot punya empat postur (folder img/Maskot/):
+//   sapa    → menyambut pengunjung (hero, pengantar & kondisi diam)
+//   periksa → saat membahas benda yang diamati (anatomi, galeri)
+//   jelas   → saat tur sedang menjelaskan (video, kuis)
+//   tutup   → saat tur selesai (ucapan penutup)
+// Postur tiap langkah diatur lewat properti `pose` di STEPS.
 
 const MASKOT = {
   sapa: 'img/Maskot/Ayu%20(Greeting).png',
+  periksa: 'img/Maskot/Ayu%20(Inspecting).png',
   jelas: 'img/Maskot/Ayu%20(Explaining).png',
   tutup: 'img/Maskot/Ayu%20(Appreciation).png',
 };
