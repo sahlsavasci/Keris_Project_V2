@@ -602,6 +602,9 @@ renderAnatomi();
 //          caption diganti `after`, lalu pengunjung menekan "Lewati" saat siap
 // onLeave = dipanggil saat meninggalkan langkah ini
 
+// Jeda (ms) antara tombol sorotan ditekan dan pindah ke langkah berikutnya — sama untuk semua langkah
+const JEDA_PINDAH = 700;
+
 const STEPS = [
   {
     t: 'Pengantar',
@@ -609,7 +612,6 @@ const STEPS = [
     sec: '#hero',
     sel: '#btn-anatomi',
     audio: '#suaraSambutan',   // rekaman sambutan Ayu
-    otomatis: true,            // selesai rekaman → lanjut sendiri ke langkah berikut
     s: 'Halo, selamat datang di Pusaka, rumah belajar keris Nusantara. Aku akan menemanimu berkeliling singkat. Pertama, tekan tombol Mulai Belajar yang bersinar di layar.',
   },
   {
@@ -705,7 +707,7 @@ function nextStep() {
       targets.forEach((el) => el.classList.remove('spot'));
       return;
     }
-    setTimeout(nextStep, gi === 1 ? 900 : 300);
+    setTimeout(nextStep, JEDA_PINDAH);
   };
   targets.forEach((el) => el.addEventListener('click', lanjut, { once: true }));
 
@@ -717,15 +719,8 @@ function nextStep() {
     if (step.onLeave) step.onLeave();
   };
 
-  // Langkah sambutan: putar rekaman Ayu (tanpa TTS agar tidak bertumpuk)
-  if (step.audio && step.otomatis) {
-    $('#cap').textContent = step.s;
-    setNow('Sambutan (Ayu)', true);
-    putarSambutan(() => { if (gi === langkahIni) nextStep(); }, step.audio);
-    return;
-  }
-
-  // Langkah lain: putar rekaman Ayu (bila suara aktif), lalu tunggu pengunjung menekan tombol sorotan
+  // SEMUA langkah (termasuk pengantar) bertempo sama: putar rekaman Ayu (bila suara aktif),
+  // lalu TUNGGU pengunjung menekan tombol sorotan. Tur tidak pernah lanjut sendiri.
   if (step.audio && S.on) {
     $('#cap').textContent = step.s;
     setNow(step.t + ' (Ayu)', true);
